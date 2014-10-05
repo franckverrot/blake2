@@ -46,6 +46,7 @@ VALUE m_blake2_digest(VALUE self, VALUE _input, VALUE _representation) {
 
   char * input = RSTRING_PTR(_input);
   int input_length = RSTRING_LEN(_input);
+  int i;
 
   Data_Get_Struct(self, Blake2, blake2);
 
@@ -54,7 +55,8 @@ VALUE m_blake2_digest(VALUE self, VALUE _input, VALUE _representation) {
   int key_len = RARRAY_LEN(bytes_ary);
 
   uint8_t * key_bytes = (uint8_t*)ruby_xmalloc(key_len * sizeof(uint8_t));
-  for(int i = 0; i < key_len; i++) {
+
+  for(i = 0; i < key_len; i++) {
     VALUE byte = rb_ary_entry(bytes_ary, i);
     key_bytes[i] = NUM2INT(byte);
   }
@@ -65,7 +67,7 @@ VALUE m_blake2_digest(VALUE self, VALUE _input, VALUE _representation) {
   if(_representation == to_bytes) {
     VALUE result = rb_ary_new2(blake2->output_length);
 
-    for(int i = 0; i < blake2->output_length; i++) {
+    for(i = 0; i < blake2->output_length; i++) {
       rb_ary_push(result, INT2NUM(blake2->output[i]));
     }
 
@@ -73,7 +75,7 @@ VALUE m_blake2_digest(VALUE self, VALUE _input, VALUE _representation) {
   } else if(_representation == to_hex) {
     char * c_str = (char*)ruby_xmalloc(blake2->output_length * sizeof(char) * 2);
 
-    for(int i = 0; i < blake2->output_length; i++) {
+    for(i = 0; i < blake2->output_length; i++) {
       sprintf(c_str + (i * 2), "%02x", blake2->output[i]);
     }
     return rb_str_new2(c_str);
