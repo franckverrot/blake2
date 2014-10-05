@@ -4,7 +4,7 @@
 
 This gem is a C-extension for using BLAKE2 in Ruby.
 
-For a detailed explanation about BLAKE2, [here's the offical website][https://blake2.net/].
+For a detailed explanation about BLAKE2, [here's the offical website](https://blake2.net/).
 
 ## INSTALL
 
