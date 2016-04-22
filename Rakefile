@@ -12,7 +12,7 @@ Rake::TestTask.new do |t|
   t.warning = true
 end
 
-task :default => :full
+task default: :full
 
-task :full => ["clean", "compile", "test"]
 desc 'Run the full spec suite'
+task full: %w(clean compile test)
