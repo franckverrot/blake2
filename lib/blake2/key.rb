@@ -1,8 +1,6 @@
 class Blake2
   class Key
-    def bytes
-      @bytes
-    end
+    attr_reader :bytes
 
     def initialize(bytes)
       @bytes = bytes
