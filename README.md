@@ -22,6 +22,9 @@ This gem is a C-extension for using BLAKE2s in Ruby.
 
 This implementation supports the BLAKE2s variant with 32 Bytes of output.
 
+The C code for this gem is taken from the [official reference C implementation](https://github.com/BLAKE2/BLAKE2)
+as of commit `02bf34f3d49c205812c34dfce9123a7c74509605`.
+
 For a detailed explanation about BLAKE2s, [here's the offical website](https://blake2.net/).
 
 ## INSTALL
