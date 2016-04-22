@@ -1,14 +1,16 @@
 /*
    BLAKE2 reference source code package - reference C implementations
-
-   Written in 2012 by Samuel Neves <sneves@dei.uc.pt>
-
-   To the extent possible under law, the author(s) have dedicated all copyright
-   and related and neighboring rights to this software to the public domain
-   worldwide. This software is distributed without any warranty.
-
-   You should have received a copy of the CC0 Public Domain Dedication along with
-   this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+  
+   Copyright 2012, Samuel Neves <sneves@dei.uc.pt>.  You may use this under the
+   terms of the CC0, the OpenSSL Licence, or the Apache Public License 2.0, at
+   your option.  The terms of these licenses can be found at:
+  
+   - CC0 1.0 Universal : http://creativecommons.org/publicdomain/zero/1.0
+   - OpenSSL license   : https://www.openssl.org/source/license.html
+   - Apache 2.0        : http://www.apache.org/licenses/LICENSE-2.0
+  
+   More information about the BLAKE2 hash function can be found at
+   https://blake2.net.
 */
 
 #include <stdint.h>
@@ -40,22 +42,27 @@ static const uint8_t blake2s_sigma[10][16] =
 
 static inline int blake2s_set_lastnode( blake2s_state *S )
 {
-  S->f[1] = ~0U;
+  S->f[1] = -1;
   return 0;
 }
 
 static inline int blake2s_clear_lastnode( blake2s_state *S )
 {
-  S->f[1] = 0U;
+  S->f[1] = 0;
   return 0;
 }
 
 /* Some helper functions, not necessarily useful */
+static inline int blake2s_is_lastblock( const blake2s_state *S )
+{
+  return S->f[0] != 0;
+}
+
 static inline int blake2s_set_lastblock( blake2s_state *S )
 {
   if( S->last_node ) blake2s_set_lastnode( S );
 
-  S->f[0] = ~0U;
+  S->f[0] = -1;
   return 0;
 }
 
@@ -63,7 +70,7 @@ static inline int blake2s_clear_lastblock( blake2s_state *S )
 {
   if( S->last_node ) blake2s_clear_lastnode( S );
 
-  S->f[0] = 0U;
+  S->f[0] = 0;
   return 0;
 }
 
@@ -301,8 +308,12 @@ int blake2s_final( blake2s_state *S, uint8_t *out, uint8_t outlen )
 {
   uint8_t buffer[BLAKE2S_OUTBYTES] = {0};
 
-  if( outlen > BLAKE2S_OUTBYTES )
+  if( out == NULL || outlen == 0 || outlen > BLAKE2S_OUTBYTES )
     return -1;
+
+  if( blake2s_is_lastblock( S ) )
+    return -1;
+
 
   if( S->buflen > BLAKE2S_BLOCKBYTES )
   {
@@ -329,11 +340,15 @@ int blake2s( uint8_t *out, const void *in, const void *key, const uint8_t outlen
   blake2s_state S[1];
 
   /* Verify parameters */
-  if ( NULL == in ) return -1;
+  if ( NULL == in && inlen > 0 ) return -1;
 
   if ( NULL == out ) return -1;
 
-  if ( NULL == key ) keylen = 0; /* Fail here instead if keylen != 0 and key == NULL? */
+  if ( NULL == key && keylen > 0) return -1;
+
+  if( !outlen || outlen > BLAKE2S_OUTBYTES ) return -1;
+
+  if( keylen > BLAKE2S_KEYBYTES ) return -1;
 
   if( keylen > 0 )
   {
@@ -348,6 +363,13 @@ int blake2s( uint8_t *out, const void *in, const void *key, const uint8_t outlen
   blake2s_final( S, out, outlen );
   return 0;
 }
+
+#if defined(SUPERCOP)
+int crypto_hash( unsigned char *out, unsigned char *in, unsigned long long inlen )
+{
+  return blake2s( out, in, NULL, BLAKE2S_OUTBYTES, inlen, 0 );
+}
+#endif
 
 #if defined(BLAKE2S_SELFTEST)
 #include <string.h>
