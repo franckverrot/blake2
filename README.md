@@ -1,27 +1,57 @@
-# BLAKE2 for Ruby
+# BLAKE2s for Ruby
 
 ## SUMMARY
 
-This gem is a C-extension for using BLAKE2 in Ruby.
+This gem is a C-extension for using BLAKE2s in Ruby.
 
-For a detailed explanation about BLAKE2, [here's the offical website](https://blake2.net/).
+>BLAKE2 comes in two basic flavors:
+>
+>BLAKE2b (or just BLAKE2) is optimized for 64-bit platforms and
+>produces digests of any size between 1 and 64 bytes.
+>
+>BLAKE2s is optimized for 8- to 32-bit platforms and produces
+>digests of any size between 1 and 32 bytes.
+>
+>Both BLAKE2b and BLAKE2s are believed to be highly secure and perform
+>well on any platform, software, or hardware.  BLAKE2 does not require
+>a special "HMAC" (Hashed Message Authentication Code) construction
+>for keyed message authentication as it has a built-in keying
+>mechanism.
+>
+>[https://tools.ietf.org/html/rfc7693#page-3](https://tools.ietf.org/html/rfc7693#page-3)
+
+This implementation supports the BLAKE2s variant with 32 Bytes of output.
+
+For a detailed explanation about BLAKE2s, [here's the offical website](https://blake2.net/).
 
 ## INSTALL
 
-    gem install blake2
-
+```
+gem install blake2
+```
 
 ## USAGE
 
-    out_len = 32
-    input   = "hello world"
-    key     = Key.from_string("foo bar baz") # or `Key.none`, or `Key.from_hex("0xDEADBEAF")`
+``` ruby
+require 'blake2'
 
-    digestor = Blake2.new(out_len, key)
+out_len = 32
+input = 'abc'
 
-    digestor.digest(input, :to_hex) # => 9567...b180
-    digestor.digest(input, :to_bytes) # => [0x95, 0x67, <28 bytes later...>, 0xb1, 0x80]
+# The main application of keyed BLAKE2 is as a message authentication code (MAC)
+key = Blake2::Key.none
+# key = Blake2::Key.from_hex("0xDEADBEAF")
+# key = Blake2::Key.from_string("foo bar baz")
 
+digestor = Blake2.new(out_len, key)
+
+digestor.digest(input, :to_hex)
+=> "508c5e8c327c14e2e1a72ba34eeb452f37458b209ed63a294d999b4c86675982"
+# Matches BLAKE2s reference output @ https://tools.ietf.org/html/rfc7693#page-15
+
+digestor.digest(input, :to_bytes)
+=> [80, 140, 94, 140, 50, 124, 20, 226, 225, 167, 43, 163, 78, 235, 69, 47, 55, 69, 139, 32, 158, 214, 58, 41, 77, 153, 155, 76, 134, 103, 89, 130]
+```
 
 ## API
 
