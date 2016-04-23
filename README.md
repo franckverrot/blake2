@@ -38,32 +38,44 @@ gem install blake2
 ``` ruby
 require 'blake2'
 
-out_len = 32
-input = 'abc'
+# The UTF-8 String (Required) that you want to digest.
+input   = 'abc'
 
 # The main application of keyed BLAKE2 is as a message authentication code (MAC)
+# By default `Blake2::Key.none` is used.
 key = Blake2::Key.none
 # key = Blake2::Key.from_string("foo bar baz")
 # key = Blake2::Key.from_hex('DEADBEAF')
 # key = Blake2::Key.from_bytes([222, 173, 190, 175])
 
-digestor = Blake2.new(out_len, key)
+# The output length in Bytes of the Hash, Max and Default is 32.
+out_len = 32
 
-digestor.digest(input, :to_hex)
+# HEX OUTPUT
+############
+
+Blake2.hex(input)
 => "508c5e8c327c14e2e1a72ba34eeb452f37458b209ed63a294d999b4c86675982"
 
-digestor.digest(input, :to_bytes)
-=> [80, 140, 94, 140, 50, 124, 20, 226, 225, 167, 43, 163, 78, 235, 69, 47, 55, 69, 139, 32, 158, 214, 58, 41, 77, 153, 155, 76, 134, 103, 89, 130]
+Blake2.hex(input, key)
+=> "508c5e8c327c14e2e1a72ba34eeb452f37458b209ed63a294d999b4c86675982"
+
+Blake2.hex(input, key, out_len)
+=> "508c5e8c327c14e2e1a72ba34eeb452f37458b209ed63a294d999b4c86675982"
+
+# BYTES OUTPUT
+##############
+
+Blake2.bytes(input)
+=> [80, 140, 94, ...]
+
+Blake2.bytes(input, key)
+=> [80, 140, 94, ...]
+
+Blake2.bytes(input, key, out_len)
+=> [80, 140, 94, ...]
+
 ```
-
-## API
-
-TODO
-
-## TODO
-
-* [ ] Documentation
-* [ ] Improve controls/type checks in the `digest` methods
 
 ## CONTRIBUTE
 
