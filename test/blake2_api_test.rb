@@ -1,5 +1,6 @@
 require 'test_helper'
 
+# Test the new external API and param validation.
 class Blake2Test < MiniTest::Test
   def test_hex_with_input_only
     res = Blake2.hex('abc')
