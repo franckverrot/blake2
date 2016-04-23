@@ -1,4 +1,3 @@
-# rubocop:disable MethodLength, ClassLength, WordArray, LineLength
 require 'test_helper'
 
 # These test vectors are taken from blake2s-js npm package
