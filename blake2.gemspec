@@ -8,8 +8,10 @@ Gem::Specification.new do |spec|
   spec.license  = "GPLv3"
 
   spec.summary     = "BLAKE2 - fast secure hashing - for Ruby"
+  spec.required_ruby_version = ">= 2.1.0"
   spec.description = spec.summary
-  spec.files       = `git ls-files -z`.split("\x0")
+  spec.files       = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  spec.bindir      = "bin"
 
   spec.extensions << "ext/blake2_ext/extconf.rb"
 
@@ -20,6 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.5"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "minitest"
+  spec.add_development_dependency "pry", "~> 0.10"
 
   spec.cert_chain  = ['certs/franckverrot.pem']
   spec.signing_key = File.expand_path(ENV['RUBYGEMS_CERT_PATH']) if $0 =~ /gem\z/
