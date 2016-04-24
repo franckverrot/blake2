@@ -77,6 +77,15 @@ Blake2.bytes(input, key, out_len)
 
 ```
 
+## DEVELOPMENT
+
+After checking out the repo, run `bin/setup` to install dependencies. Then,
+run `rake full` to build and test, or `rake test` to only run the tests.
+You can also run `bin/console` for an interactive prompt that will allow you
+to experiment.
+
+To install this gem onto your local machine, run `bundle exec rake install`.
+
 ## CONTRIBUTE
 
 1. Fork it ( https://github.com/franckverrot/blake2/fork )
