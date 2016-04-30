@@ -560,7 +560,7 @@ class Blake2VectorTest < MiniTest::Test
 
   def test_keyed_with_hex
     key = (0..31).map { |i| i }
-    key_hex = bytes_to_hex(key)
+    key_hex = Blake2::Key.from_hex(bytes_to_hex(key))
 
     (0..255).each do |i|
       buf = []
@@ -571,7 +571,7 @@ class Blake2VectorTest < MiniTest::Test
         j += 1
       end
 
-      res = Blake2.new(32, Blake2::Key.from_hex(key_hex)).digest(bytes_to_string(buf), :to_hex)
+      res = Blake2.new(32, key_hex).digest(bytes_to_string(buf), :to_hex)
       assert_kind_of String, res
       assert_equal @golden_keyed[i], res
     end
