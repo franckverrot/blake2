@@ -5,11 +5,11 @@ Gem::Specification.new do |spec|
   spec.authors  = ["Franck Verrot"]
   spec.email    = ["franck@verrot.fr"]
   spec.homepage = "https://github.com/franckverrot/blake2"
-  spec.license  = "GPLv3"
+  spec.license  = "GPL-3.0"
 
   spec.summary     = "BLAKE2 - fast secure hashing - for Ruby"
   spec.required_ruby_version = ">= 2.1.0"
-  spec.description = spec.summary
+  spec.description = "BLAKE2 is a C-extension for using BLAKE2s in Ruby"
   spec.files       = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir      = "bin"
 
