@@ -18,15 +18,19 @@ VALUE cBlake2;
 static void blake2_free(Blake2 *blake2) {
   if(blake2->key_length > 0) {
     ruby_xfree(blake2->key_bytes);
+    blake2->key_length = 0;
   }
 
   if(blake2->output_length > 0) {
     ruby_xfree(blake2->output);
+    blake2->output_length = 0;
   }
+
+  free(blake2);
 }
 
-VALUE blake2_alloc(VALUE klass) {
-  VALUE blake2_obj = ruby_xmalloc(sizeof(Blake2));
+static VALUE blake2_alloc(VALUE klass) {
+  Blake2 *blake2_obj = (Blake2 *)malloc(sizeof(Blake2));
 
   return Data_Wrap_Struct(klass, NULL, blake2_free, blake2_obj);
 }
@@ -59,7 +63,7 @@ VALUE m_blake2_initialize(VALUE self, VALUE _len, VALUE _key) {
 VALUE m_blake2_digest(VALUE self, VALUE _input, VALUE _representation) {
   Blake2 *blake2;
 
-  char * input     = RSTRING_PTR(_input);
+  char *input      = RSTRING_PTR(_input);
   int input_length = RSTRING_LEN(_input);
   int i;
 
@@ -76,23 +80,27 @@ VALUE m_blake2_digest(VALUE self, VALUE _input, VALUE _representation) {
     for(i = 0; i < blake2->output_length; i++) {
       rb_ary_push(result, INT2NUM(blake2->output[i]));
     }
-
-    return result;
   } else if(_representation == blake2->to_hex) {
-    char * c_str = (char*)ruby_xmalloc(blake2->output_length * sizeof(char) * 2);
+    int ary_len = blake2->output_length * sizeof(char) * 2;
+    char *c_str = (char*)malloc(ary_len + 1);
 
     for(i = 0; i < blake2->output_length; i++) {
       sprintf(c_str + (i * 2), "%02x", blake2->output[i]);
     }
+    c_str[ary_len] = 0;
 
-    result = rb_str_new2(c_str);
+    result = rb_str_new(c_str, ary_len);
 
-    ruby_xfree(c_str);
+    if(RSTRING_LEN(result) != ary_len) {
+      rb_raise(rb_eRuntimeError, "m_blake2_digest: sizes don't match. Ary: %d != %d", RSTRING_LEN(result), ary_len);
+    }
 
-    return result;
+    free(c_str);
   } else {
-    rb_raise(rb_eArgError, "Unknown representation", _representation);
+    rb_raise(rb_eArgError, "unknown representation :%"PRIsVALUE"", _representation);
   }
+
+  return result;
 }
 
 void Init_blake2_ext() {
