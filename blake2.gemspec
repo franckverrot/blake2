@@ -1,7 +1,7 @@
 # coding: utf-8
 Gem::Specification.new do |spec|
   spec.name     = "blake2"
-  spec.version  = "0.2.0"
+  spec.version  = "0.3.0"
   spec.authors  = ["Franck Verrot"]
   spec.email    = ["franck@verrot.fr"]
   spec.homepage = "https://github.com/franckverrot/blake2"
