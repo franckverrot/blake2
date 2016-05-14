@@ -18,11 +18,11 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "rake-compiler"
-  spec.add_development_dependency "bundler", "~> 1.5"
-  spec.add_development_dependency "rake"
-  spec.add_development_dependency "minitest"
-  spec.add_development_dependency "pry", "~> 0.10"
+  spec.add_development_dependency "rake-compiler", "~> 0"
+  spec.add_development_dependency "bundler"      , "~> 1.5"
+  spec.add_development_dependency "rake"         , "~> 0"
+  spec.add_development_dependency "minitest"     , "~> 0"
+  spec.add_development_dependency "pry"          , "~> 0.10"
 
   spec.cert_chain  = ['certs/franckverrot.pem']
   spec.signing_key = File.expand_path(ENV['RUBYGEMS_CERT_PATH']) if $0 =~ /gem\z/
