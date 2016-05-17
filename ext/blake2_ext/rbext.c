@@ -16,21 +16,17 @@ typedef struct {
 VALUE cBlake2;
 
 static void blake2_free(Blake2 *blake2) {
-  if(blake2->key_length > 0) {
-    ruby_xfree(blake2->key_bytes);
-    blake2->key_length = 0;
-  }
+  free(blake2->key_bytes);
+  free(blake2->output);
 
-  if(blake2->output_length > 0) {
-    ruby_xfree(blake2->output);
-    blake2->output_length = 0;
-  }
+  rb_gc_mark(blake2->to_hex);
+  rb_gc_mark(blake2->to_bytes);
 
-  free(blake2);
+  ruby_xfree(blake2);
 }
 
 static VALUE blake2_alloc(VALUE klass) {
-  Blake2 *blake2_obj = (Blake2 *)malloc(sizeof(Blake2));
+  Blake2 *blake2_obj = (Blake2 *)ruby_xmalloc(sizeof(Blake2));
 
   return Data_Wrap_Struct(klass, NULL, blake2_free, blake2_obj);
 }
@@ -46,7 +42,7 @@ VALUE m_blake2_initialize(VALUE self, VALUE _len, VALUE _key) {
 
   VALUE key_bytes_ary = rb_funcall(_key, bytes_method, 0);
   blake2->key_length  = RARRAY_LEN(key_bytes_ary);
-  blake2->key_bytes   = (uint8_t*)ruby_xmalloc(blake2->key_length * sizeof(uint8_t));
+  blake2->key_bytes   = (uint8_t*)malloc(blake2->key_length * sizeof(uint8_t));
 
   for(i = 0; i < blake2->key_length; i++) {
     VALUE byte           = rb_ary_entry(key_bytes_ary, i);
@@ -54,7 +50,7 @@ VALUE m_blake2_initialize(VALUE self, VALUE _len, VALUE _key) {
   }
 
   blake2->output_length = NUM2INT(_len);
-  blake2->output        = (uint8_t*)ruby_xmalloc(blake2->output_length * sizeof(uint8_t));
+  blake2->output        = (uint8_t*)malloc(blake2->output_length * sizeof(uint8_t));
 
   return Qnil;
 }
