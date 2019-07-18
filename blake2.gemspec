@@ -5,7 +5,7 @@ Gem::Specification.new do |spec|
   spec.authors  = ["Franck Verrot"]
   spec.email    = ["franck@verrot.fr"]
   spec.homepage = "https://github.com/franckverrot/blake2"
-  spec.license  = "GPL-3.0"
+  spec.license  = "MIT"
 
   spec.summary     = "BLAKE2 - fast secure hashing - for Ruby"
   spec.required_ruby_version = ">= 2.1.0"
