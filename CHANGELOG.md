@@ -1,5 +1,10 @@
 # Releases
 
+## 1.0.0
+
+* Converted license from GPL to MIT
+
+
 ## 0.5.0
 
 * Locked development dependencies in the gemspec
